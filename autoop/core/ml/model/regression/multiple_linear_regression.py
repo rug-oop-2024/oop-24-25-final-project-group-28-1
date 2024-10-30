@@ -2,7 +2,7 @@ from sklearn.linear_model import LinearRegression
 import numpy as np
 
 class MultipleLinearRegression():
-    def __init__(self) -> None:
+    def __init__(self, alpha: float = 1.0) -> None:
         self.alpha = alpha
         if self.alpha <= 0:
             raise ValueError("alpha must be a positive non-zero integer.")
@@ -61,3 +61,5 @@ class MultipleLinearRegression():
         :return: None
         """
         self.MultipleLinearRegression.set_params(**d)
+
+
