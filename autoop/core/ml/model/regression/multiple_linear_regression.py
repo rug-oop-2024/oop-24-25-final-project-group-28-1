@@ -1,4 +1,4 @@
-from sklearn.linear_model import LinearRegression 
+from sklearn.linear_model import LinearRegression
 import numpy as np
 
 class MultipleLinearRegression():
@@ -8,16 +8,12 @@ class MultipleLinearRegression():
             raise ValueError("alpha must be a positive non-zero integer.")
         self.parameters = {
              "fit_intercept": True,
-             "precompute": False,
              "copy_X": True,
-             "max_iter": 1000,
-             "tol": 0.0001,
-             "warm_start": False,
-             "positive": False,
-             "random_stat": None,
-             "selection": "cyclic"}
+             "n_jobs": None,
+             "positive": False
+            }             
         self.MultipleLinearRegression = LinearRegression()
-        
+
 
     def fit(self, X: np.ndarray, y: np.ndarray) -> None:
         """

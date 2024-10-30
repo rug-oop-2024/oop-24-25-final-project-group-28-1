@@ -12,7 +12,7 @@ def get_metric(name: str):
     # Return a metric instance given its str name.
     raise NotImplementedError("To be implemented.")
 
-class Metric(...):
+class Metric(ABC):
     """Base class for all metrics.
     """
     # your code here
@@ -22,4 +22,8 @@ class Metric(...):
         raise NotImplementedError("To be implemented.")
 
 # add here concrete implementations of the Metric class
-    
+class MeanSquaredError(Metric):
+    pass
+
+class Accuracy(Metric):
+    pass
