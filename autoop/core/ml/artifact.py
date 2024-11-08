@@ -4,16 +4,14 @@ from typing import Dict, Any
 
 
 class Artifact(BaseModel):
-    asset_path: str = Field(
-        description="Path where the artifact is stored"
-    )
-    version: str = Field(
-        default="1.0.0",
-        description="Version of the artifact")
+    name: str = Field(description="Name of asset")
+    tags: str = Field(default="No tags", description="Tags")
+    type: str = Field(description="The type of the artifact")
+    asset_path: str = Field(description="Path where the artifact is stored")
+    version: str = Field(default="1.0.0", description="Version of the artifact")
     data: bytes = Field(description="Binary data of the artifact")
     metadata: Dict[str, Any] = Field(
-        default_factory=dict,
-        description="Metadata for the artifact"
+        default_factory=dict, description="Metadata for the artifact"
     )
 
     @property
