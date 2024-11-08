@@ -24,15 +24,8 @@ automl = AutoMLSystem.get_instance()
 datasets = automl.registry.list(type="dataset")
 # st.write(f"Debug: datasets instance: {datasets[0]}")
 
-
-def init_session():
-    if "selectbox" not in st.session_state:
-        st.session_state.selectbox = None
-
-
-init_session()
-st.session_state.selectbox
-
+if "selectbox" not in st.session_state:
+    st.session_state.selectbox = None
 
 def csv2pd(path_or_url, headertype=None):
     if 1:  # try:
