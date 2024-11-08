@@ -5,7 +5,7 @@ import numpy as np
 
 class Feature(BaseModel):
     name: str = Field(..., description="Name of the feature")
-    feature_type: Literal["categorical", "numerical"] = Field(
+    type: Literal["categorical", "numerical"] = Field(
         description="Type of the feature"
         )
     unique_values: int = Field(
@@ -27,10 +27,10 @@ class Feature(BaseModel):
         Args:
             data (np.ndarray): Data for the feature column.
         """
-        if self.feature_type == "numerical":
+        if self.type == "numerical":
             self.mean = np.mean(data)
             self.std_dev = np.std(data)
-        elif self.feature_type == "categorical":
+        elif self.type == "categorical":
             self.unique_values = len(np.unique(data))
 
     def __str__(self) -> str:
@@ -39,14 +39,14 @@ class Feature(BaseModel):
         Returns:
             str: Information about the feature.
         """
-        if self.feature_type == "numerical":
+        if self.type == "numerical":
             return (
-                f"Feature(name={self.name}, type={self.feature_type}, "
+                f"Feature(name={self.name}, type={self.type}, "
                 f"mean={self.mean:.2f}, std_dev={self.std_dev:.2f})"
             )
-        elif self.feature_type == "categorical":
+        elif self.type == "categorical":
             return (
-                f"Feature(name={self.name}, type={self.feature_type}, "
+                f"Feature(name={self.name}, type={self.type}, "
                 f"unique_values={self.unique_values})"
             )
-        return f"Feature(name={self.name}, type={self.feature_type})"
+        return f"Feature(name={self.name}, type={self.type})"
