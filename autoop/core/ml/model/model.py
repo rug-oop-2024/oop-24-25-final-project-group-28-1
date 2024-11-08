@@ -28,7 +28,7 @@ class Model(Artifact, ABC):
         self._parameters = parameters if parameters is not None else {}
 
     @abstractmethod
-    def train(self, X: np.ndarray, y: np.ndarray) -> None:
+    def fit(self, X: np.ndarray, y: np.ndarray) -> None:
         """
         Abstract method to train the model on given data.
         Args:
