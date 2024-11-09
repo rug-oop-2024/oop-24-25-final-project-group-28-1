@@ -1,6 +1,6 @@
 import base64
-from typing import Any, Dict
-
+from typing import Any, Dict, List
+from autoop.core.ml.feature import Feature
 from pydantic import BaseModel, Field
 
 
@@ -14,6 +14,7 @@ class Artifact(BaseModel):
     metadata: Dict[str, Any] = Field(
         default_factory=dict, description="Metadata for the artifact"
     )
+    features:  Dict[str, Any] = Field(default={}, description="List with features")
 
     @property
     def id(self) -> str:
@@ -40,3 +41,10 @@ class Artifact(BaseModel):
             bytes: The data of the artifact.
         """
         return self.data
+    
+    
+    def get_features(self):
+        return self.features
+    
+    def add_features(self, features: Dict[str, Any]) -> None:
+        self.features = features

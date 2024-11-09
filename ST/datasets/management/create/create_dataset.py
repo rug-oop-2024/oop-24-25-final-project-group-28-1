@@ -1,10 +1,12 @@
+from autoop.core.ml.dataset import Dataset
+from ST.core.system import AutoMLSystem
+
 from pathlib import Path
 
 import pandas as pd
 import streamlit as st
 
-from autoop.core.ml.dataset import Dataset
-from ST.core.system import AutoMLSystem
+
 
 st.write("**Developers info**")
 st.write("This is ST/datasets/management/create_dataset.py")
@@ -26,7 +28,6 @@ if "selectbox" not in st.session_state:
 
 
 def csv2pd(path_or_url, headertype=None):
-    """CSV to pandas dataframe convert."""
     if 1:  # try:
         df = pd.read_csv(path_or_url, sep=",", header=headertype)
         return df
@@ -90,7 +91,7 @@ df = None
 if path:
     df = csv2pd(path, headertype)
 
-if df is not None:
+if not df is None:
     # Iris data: df.columns = ["sepal_length", "sepal_width", "petal_length", "petal_width", "class"]
     st.write("### Current data frame:")
     st.write(df)
@@ -107,5 +108,5 @@ if df is not None:
         automl.registry.register(dataset)
         message = f"Dataset {dataset_name} has been succesfully stored and registered"
         st.success(message)
-        retrieved_df = dataset.read()
+        # retrieved_df = dataset.read()
         # DEBUG: st.write(retrieved_df)
