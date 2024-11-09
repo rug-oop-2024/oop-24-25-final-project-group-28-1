@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
 import base64
-from typing import Dict, Any
+from typing import Any, Dict
+
+from pydantic import BaseModel, Field
 
 
 class Artifact(BaseModel):
@@ -18,7 +19,8 @@ class Artifact(BaseModel):
     def id(self) -> str:
         """Generate a unique ID based on asset_path and version."""
         encoded_path = base64.b64encode(self.asset_path.encode()).decode()
-        return f"{encoded_path}:{self.version}"
+        # return f"{encoded_path}:{self.version}"
+        return f"{encoded_path}_{self.version}"
 
     def save(self, data: bytes) -> bytes:
         """

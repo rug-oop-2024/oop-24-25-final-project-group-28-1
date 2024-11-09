@@ -1,12 +1,10 @@
-import streamlit as st
-import pandas as pd
-import requests
-from os import listdir
-from os.path import isfile, join
 from pathlib import Path
 
 from ST.core.system import AutoMLSystem
 from autoop.core.ml.dataset import Dataset
+
+import pandas as pd
+import streamlit as st
 
 
 st.write("**Developers info**")
@@ -14,8 +12,8 @@ st.write("This is ST/datasets/management/create_dataset.py")
 st.write("AutoMLSystem has been imported from core/system/py")
 st.write("Dataset imported from  **autoop.core.ml.dataset**")
 st.write(
-    """\n\n Mission: Upload a CSV dataset (e.g., Iris) and convert that into a dataset using the from_dataframe 
-factory method. Since a dataset is already an artifact, you can use the **AutoMLSystem.get_instance** 
+    """\n\n Mission: Upload a CSV dataset (e.g., Iris) and convert that into a dataset using the from_dataframe
+factory method. Since a dataset is already an artifact, you can use the **AutoMLSystem.get_instance**
 singelton class to to access either storage, database, or the artifact registry to save it."""
 )
 st.write("-" * 80)
@@ -26,6 +24,7 @@ datasets = automl.registry.list(type="dataset")
 
 if "selectbox" not in st.session_state:
     st.session_state.selectbox = None
+
 
 def csv2pd(path_or_url, headertype=None):
     if 1:  # try:
@@ -45,7 +44,7 @@ url = st.text_input("Enter URL or path to file:")
 st.write("### 2. From storage:")
 # Get files in ./assets/objects
 storagepath = Path("./assets/objects/")
-csvfiles = ["None"] + list(storagepath.glob("*.csv"))
+csvfiles = ["None"] + list(storagepath.glob("*"))
 helpmes = """Open this drop down menu and\n select one of the available data sets."""
 stored_dataset = st.selectbox(
     "or select an existing file:",
@@ -99,9 +98,7 @@ if not df is None:
     dataset_name = st.text_input("Enter a name for your data set to be saved", value="")
     if dataset_name:
         newid = dataset_name + str(len(datasets) + 1)
-        dataset = Dataset.from_dataframe(
-            df, name=dataset_name, asset_path=dataset_name
-        )
+        dataset = Dataset.from_dataframe(df, name=dataset_name, asset_path=dataset_name)
         # dataset.set_id(dataset_name + str(len(datasets)+1))
         # dataset.id= "sdhjshdjsdh"
         # st.write(dataset)

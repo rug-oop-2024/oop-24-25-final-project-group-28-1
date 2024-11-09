@@ -1,12 +1,12 @@
-
 import json
-from typing import Dict, Tuple, List, Union
 import os
+from pathlib import Path
+from typing import Dict, List, Tuple, Union
 
 from autoop.core.storage import Storage
 
-class Database():
 
+class Database:
     def __init__(self, storage: Storage):
         self._storage = storage
         self._data = {}
@@ -41,7 +41,7 @@ class Database():
         if not self._data.get(collection, None):
             return None
         return self._data[collection].get(id, None)
-    
+
     def delete(self, collection: str, id: str):
         """Delete a key from the database
         Args:
@@ -54,6 +54,10 @@ class Database():
             return
         if self._data[collection].get(id, None):
             del self._data[collection][id]
+            dbpath = f"{self._storage._base_path}/{collection}/{id}"
+            os.remove(
+                Path(dbpath)
+            )  # VOG: The database entry was not removed anywhere previously.
         self._persist()
 
     def list(self, collection: str) -> List[Tuple[str, dict]]:
@@ -77,7 +81,9 @@ class Database():
             if not data:
                 continue
             for id, item in data.items():
-                self._storage.save(json.dumps(item).encode(), f"{collection}{os.sep}{id}")
+                self._storage.save(
+                    json.dumps(item).encode(), f"{collection}{os.sep}{id}"
+                )
 
         # for things that were deleted, we need to remove them from the storage
         keys = self._storage.list("")
@@ -85,7 +91,7 @@ class Database():
             collection, id = key.split(os.sep)[-2:]
             if not self._data.get(collection, id):
                 self._storage.delete(f"{collection}{os.sep}{id}")
-    
+
     def _load(self):
         """Load the data from storage"""
         self._data = {}
@@ -96,4 +102,3 @@ class Database():
             if collection not in self._data:
                 self._data[collection] = {}
             self._data[collection][id] = json.loads(data.decode())
-
