@@ -1,25 +1,19 @@
-from pydantic import BaseModel, Field
 from typing import Literal
+
 import numpy as np
+from pydantic import BaseModel, Field
 
 
 class Feature(BaseModel):
     name: str = Field(..., description="Name of the feature")
-    type: Literal["categorical", "numerical"] = Field(
-        description="Type of the feature"
-        )
+    type: Literal["categorical", "numerical"] = Field(description="Type of the feature")
     unique_values: int = Field(
-        None,
-        description="Number of unique values for categorical features"
-        )
-    mean: float = Field(
-        None,
-        description="Mean value for numerical features"
-        )
+        None, description="Number of unique values for categorical features"
+    )
+    mean: float = Field(None, description="Mean value for numerical features")
     std_dev: float = Field(
-        None,
-        description="Standard deviation for numerical features"
-        )
+        None, description="Standard deviation for numerical features"
+    )
 
     def calculate_statistics(self, data: np.ndarray) -> None:
         """
