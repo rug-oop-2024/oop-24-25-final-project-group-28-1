@@ -1,3 +1,6 @@
+from autoop.core.ml.dataset import Dataset
+from ST.core.system import AutoMLSystem
+
 from os import listdir
 from os.path import isfile, join
 from pathlib import Path
@@ -6,15 +9,15 @@ import pandas as pd
 import requests
 import streamlit as st
 
-from autoop.core.ml.dataset import Dataset
-from ST.core.system import AutoMLSystem
 
-st.write("**Developers info**")
-st.write("This is ST/datasets/management/delete_dataset.py")
-st.write("AutoMLSystem has been imported from core/system/py")
-#  st.write("Dataset imported from  **autoop.core.ml.dataset**")
-st.write("""\n\n Mission: From the list with datasets, delete one.""")
-st.write("-" * 80)
+# Debug: st.write("**Developers info**")
+# Debug: st.write("This is ST/datasets/management/delete_dataset.py")
+# Debug: st.write("AutoMLSystem has been imported from core/system/py")
+# Debug: st.write("Dataset imported from  **autoop.core.ml.dataset**")
+# Debug: st.write("""\n\n Mission: From the list with datasets, delete one.""")
+# Debug: st.write("-" * 80)
+
+st.write("## Delete dataset")
 
 st.session_state.widget = ""
 
@@ -23,7 +26,6 @@ if "store_selection" not in st.session_state:
 
 if "selection" not in st.session_state:
     st.session_state.selection = None
-
 
 def clear_box():
     st.session_state.store_selection = st.session_state.selection
@@ -45,7 +47,7 @@ for ds in datasets:
 
 
 st.write("### Select a dataset to delete")
-prompt = "Select a dataset to delete:"
+prompt = "Select:"
 delete_index = st.selectbox(
     prompt,
     range(len(selects)),
