@@ -32,8 +32,16 @@ num_cols = len(df.columns)
 # is considered to be 'numerical'
 # Create a streamlit form that allows a user to enter 
 # the names of the columns
+
+feats = list(dataset.features.keys())
+if feats:
+     colnames = feats
+     names_exist = True
+else:
+     colnames = []
+     names_exist = False
+
 st.write("### Enter column names")
-colnames = []
 coltypes = []
 with st.form("Features"):
      for i, df_col in enumerate(df.columns):
@@ -43,9 +51,15 @@ with st.form("Features"):
           else:
                txt = "categorical"          
           s = f"Feature {i+1}: Name of **{txt}** column"
-          default_colname = f"column{i+1}"
+          if names_exist:
+              default_colname = colnames[i]
+          else:
+               default_colname = f"column{i+1}"
           colname = st.text_input(s, value=default_colname)
-          colnames.append(colname)
+          if names_exist:
+               colnames[i] = colname 
+          else:
+               colnames.append(colname)
           coltypes.append(txt)
      submitted = st.form_submit_button("Store")
 
@@ -67,5 +81,5 @@ for i, df_col in enumerate(df.columns):
 
 dataset.add_features(feature_dict)
 automl.registry.register(dataset)
-st.write("Added Features:", dataset.get_features())
+st.write("## Added Features:", dataset.get_features())
 
