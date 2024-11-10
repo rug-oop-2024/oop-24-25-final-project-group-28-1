@@ -7,11 +7,16 @@ from typing import Optional, Dict
 class RandomForestClassifierModel(Model):
     def __init__(
         self,
-        name: str,
-        asset_path: str,
+        name: str = "RandomForestClassifier",
+        model_type: str = "classification",
+        asset_path: str = "",
         parameters: Optional[Dict] = None
     ):
-        super().__init__(model_type="classification", name=name, asset_path=asset_path, parameters=parameters)
+        super().__init__(
+            name=name,
+            model_type=model_type,
+            parameters=parameters
+        )
         self.model = RandomForestClassifier(**(parameters or {}))
 
     def fit(self, X: np.ndarray, y: np.ndarray) -> None:
@@ -20,5 +25,6 @@ class RandomForestClassifierModel(Model):
 
     def predict(self, X: np.ndarray) -> np.ndarray:
         if not self.trained:
-            raise ValueError("Model must be trained before making predictions.")
+            raise ValueError("""Model must be trained before making
+                             predictions.""")
         return self.model.predict(X)
