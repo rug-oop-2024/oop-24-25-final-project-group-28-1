@@ -39,20 +39,43 @@ def csv2pd(path_or_url, headertype=None):
 st.write("## Open a dataset")
 st.write("### 1. From URL:")
 iris_url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
-st.write(f"Enter url (e.g. {iris_url}): ")
+st.write("Enter url, e.g.:")
+st.write(f"1. {iris_url} (Iris dataset)")
+
 url = st.text_input("Enter URL or path to file:")
 
-st.write("### 2. File uploader (from local file system):")
+st.write("### 2. From storage:")
+# Get files in ./assets/objects
+storagepath = Path("ST/csv_repo")
+csvfiles = ["None"] + list(storagepath.glob("*"))
+helpmes = """Open this drop down menu and\n select one of the available data sets."""
+stored_dataset = st.selectbox(
+    "or select an existing file:",
+    csvfiles,
+    index=None,
+    placeholder="Select a file from this drop down menu",
+    help=helpmes,
+    key="selectbox",
+)
+
+if stored_dataset:
+    url = ""
+
+st.write("### 3. File uploader (from local file system):")
 uploaded_file = st.file_uploader(
     "or upload a file", type="csv"
 )  # Sets the file manager's filter to ".csv"
 if uploaded_file:
     url = ""
+    stored_dataset = ""
 
 path = None
 if url:
     st.write("Dataset from url:", url)
     path = url
+elif stored_dataset:
+    st.write("Dataset from own repository:", stored_dataset)
+    path = stored_dataset
 elif uploaded_file:
     st.write("Uploaded file:", uploaded_file.name)  # upload_file object has attributes
     path = uploaded_file

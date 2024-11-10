@@ -89,6 +89,7 @@ def user_input_features():
     """Allow the user to input feature values by means of sliders"""
     data = {}
     selected_features = []
+    categorical_column = None
     for key in dataset.features.keys():
         # comment: st.write("feat dict:", dataset.features[key])
         if dataset.features[key]["type"] == "numerical":
@@ -113,15 +114,19 @@ st.write(df_predict)
 df = helper.dataset_to_pd(dataset)
 df.columns = dataset.features.keys()
 
-X = df[selected_features]
-le = LabelEncoder()
-# Set makes names unique. List makes it subscriptable
-Ynames = list(set(df[categorical_column]))
-st.write("### The labels in the categorical column are:")
-st.write(Ynames)
-# Transform the Y values to integer numbers
-Y = le.fit_transform(df[categorical_column])
 
+if categorical_column:
+    X = df[selected_features]
+    le = LabelEncoder()
+    # Set makes names unique. List makes it subscriptable
+    Ynames = list(set(df[categorical_column]))
+    st.write("### The labels in the categorical column are:")
+    st.write(Ynames)
+    # Transform the Y values to integer numbers
+    Y = le.fit_transform(df[categorical_column])
+else:
+    X = df[selected_features[:-1]]
+    Y = selected_features[-1]
 # Some checks for debugging
 # debug: st.write("X:", X.shape)
 # debug: st.write("Y:", Y)
