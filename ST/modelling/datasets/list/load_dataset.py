@@ -3,15 +3,18 @@ import streamlit as st
 import pandas as pd
 import io
 
-st.write("**Developers info**")
-st.write("This is modelling/datasets/list/load_dataset.py")
-st.write("\n\n Load existing datasets using the artifact registry. You can use a select box to achieve this.")
-st.write("---")
+#st.write("**Developers info**")
+#st.write("This is modelling/datasets/list/load_dataset.py")
+#st.write("\n\n Load existing datasets using the artifact registry. You can use a select box to achieve this.")
+#st.write("---")
 
+st.write("## Loading dataset")
 dataset = None
 if 'dataset_index' not in st.session_state:
     st.session_state.dataset_index = None
-        
+     
+# An index for a dataset is not yet known, so we cannot use 
+# the helper function get_selected_dataset()   
 automl = AutoMLSystem.get_instance()
 datasets = automl.registry.list(type="dataset")
 
@@ -19,8 +22,7 @@ selects = []
 for ds in datasets:
     selects.append(ds.name)
  
- 
-st.write("### Select a data set")
+
 prompt = "Select a data set:"    
 index = st.selectbox(prompt, range(len(selects)), format_func=lambda x: selects[x], index=None)
 if not index is None:
@@ -31,6 +33,7 @@ if not index is None:
     #retrieved_df = dataset.read()
     #dataset = automl.registry.get(dataset.id)
     st.success(f"The selected dataset is {dataset.name}")
+    st.write("### Properties:")
     st.write(retrieved_df)
     st.write("Features:", dataset.get_features())
     

@@ -1,19 +1,34 @@
-from typing import Literal
-
-import numpy as np
 from pydantic import BaseModel, Field
+from typing import Literal
+import numpy as np
+
 
 
 class Feature(BaseModel):
     name: str = Field(..., description="Name of the feature")
-    type: Literal["categorical", "numerical"] = Field(description="Type of the feature")
+    type: Literal["categorical", "numerical"] = Field(
+        description="Type of the feature"
+        )
     unique_values: int = Field(
-        None, description="Number of unique values for categorical features"
-    )
-    mean: float = Field(None, description="Mean value for numerical features")
+        None,
+        description="Number of unique values for categorical features"
+        )
+    mean: float = Field(
+        None,
+        description="Mean value for numerical features"
+        )
     std_dev: float = Field(
-        None, description="Standard deviation for numerical features"
-    )
+        None,
+        description="Standard deviation for numerical features"
+        )
+    minval:  float = Field(
+        None,
+        description="Minimum value for numerical features"
+        )
+    maxval:  float = Field(
+        None,
+        description="Maximum value for numerical features"
+        )
 
     def calculate_statistics(self, data: np.ndarray) -> None:
         """
@@ -24,6 +39,8 @@ class Feature(BaseModel):
         if self.type == "numerical":
             self.mean = np.mean(data)
             self.std_dev = np.std(data)
+            self.minval = np.min(data)
+            self.maxval = np.max(data)
         elif self.type == "categorical":
             self.unique_values = len(np.unique(data))
 

@@ -8,10 +8,11 @@ choosing the target column.
 
 line2 = """* Upload a CSV dataset (e.g., Iris) and convert that into a dataset
 * Save the converted dataset
-* Model a pipeline
+* Delete existing datasets
 * Load stored datasets
 * Detect and select features
 * Select a model
+* Model a pipeline
 * Specify a data split to select training data
 * Select metrics
 * Print a pipeline summary

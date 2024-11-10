@@ -20,8 +20,8 @@ page_deployment_predict = st.Page("deployment/predict/deployment_predict.py", ti
 
 pages = {
     "MANUAL":    [page_manual],
-    "DATASETS":  [page_datasets_info, page_datasets_create, page_datasets_delete],
-    "MODELLING": [page_modelling_info, page_modelling_load, page_modelling_feat, page_modelling_models,
+    "DATASETS":  [page_datasets_create, page_datasets_delete],
+    "MODELLING": [page_modelling_load, page_modelling_feat, page_modelling_models,
                   page_modelling_pipeline_split, page_modelling_pipeline_metrics, page_modelling_pipeline_summary,
                   page_modelling_pipeline_train, page_modelling_pipeline_save ],
     "DEPLOYMENT":[page_deployment_overview, page_deployment_load, page_deployment_predict],
