@@ -7,7 +7,7 @@ import streamlit as st
 st.write("Model selection")
 
 selects = [
-    "Logistic Regresssion",
+    "Logistic Regression",
     "Random forest classifier",
     "SVM classifier",
     "Multiple linear regression",

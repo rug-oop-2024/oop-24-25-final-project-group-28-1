@@ -34,18 +34,18 @@ else:
     st.write(f"Selected model is **{selected_model}**")     
  
 match selected_model:
-    case "Logistic Regresssion":
-        model = logistic_regression.LogisticRegressionModel()
+    case "Logistic Regression":
+        model = logistic_regression.LogisticRegressionModel(asset_path="")
     case "Random forest classifier":
-        model = random_forest_classifier.RandomForestClassifierModel(name="model forest", asset_path="assets/models", model_type='classification')
+        model = random_forest_classifier.RandomForestClassifierModel(asset_path="")
     case "SVM classifier":
-        model = SVM_classifier.SVMClassifierModel()
+        model = SVM_classifier.SVMClassifierModel(asset_path="")
     case "Multiple_linear_regression":
-        model = multiple_linear_regression.MultipleLinearRegression()        
+        model = multiple_linear_regression.MultipleLinearRegression(asset_path="")        
     case "Random_forest_regressor":
-        model = random_forest_regressor.RandomForestRegressorModel()
+        model = random_forest_regressor.RandomForestRegressorModel(asset_path="")
     case "Ridge regression":
-        model = ridge_regression.RidgeRegressionModel()
+        model = ridge_regression.RidgeRegressionModel(asset_path="")
     case _:
         st.write("Noting selected")
 
@@ -65,8 +65,16 @@ for name in dataset_features.keys():
     else:
         target_feature = feature.Feature(name=name, type=feat_type)
         target_feature.calculate_statistics(df[name])
-     
-pipeline = pipeline.Pipeline(metric, dataset, model, features_list, target_feature)
+
+if 'split_val' not in st.session_state:
+    st.warning("No split value selected")
+    st.stop()
+else:
+    split_val = st.session_state.split_val
+    if split_val is None:
+        split_val = 0.8
+        
+pipeline = pipeline.Pipeline(metric, dataset, model, features_list, target_feature, split=split_val)
 
 
 if pipeline:
