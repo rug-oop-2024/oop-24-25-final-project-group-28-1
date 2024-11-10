@@ -33,13 +33,17 @@ num_cols = len(df.columns)
 # Create a streamlit form that allows a user to enter 
 # the names of the columns
 
-feats = list(dataset.features.keys())
+try:
+    fe = dataset.features.keys()
+except:
+    feats = None
+
 if feats:
-     colnames = feats
-     names_exist = True
+    colnames = feats
+    names_exist = True
 else:
-     colnames = []
-     names_exist = False
+    colnames = []
+    names_exist = False
 
 st.write("### Enter column names")
 coltypes = []
