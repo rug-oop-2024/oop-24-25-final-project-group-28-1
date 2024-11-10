@@ -72,7 +72,7 @@ match selected_model:
     case "Multiple linear regression":
         model = multiple_linear_regression.MultipleLinearRegression(
             asset_path=""
-        )
+        )        
     case "Random forest regressor":
         model = random_forest_regressor.RandomForestRegressorModel(
             asset_path=""
@@ -127,12 +127,10 @@ Y = le.fit_transform(df[categorical_column])
 # debug: st.write("X:", X.shape)
 # debug: st.write("Y:", Y)
 
-# clf = RandomForestClassifier()
-# clf = RandomForestClassifier()
 model.fit(X, Y)
 
 prediction = model.predict(df_predict)
-prediction_proba = model.model.predict_proba(df_predict)
+
 
 st.write("### Class labels and their corresponding index number")
 st.write(selected_features)
@@ -141,22 +139,24 @@ st.write("### Prediction")
 st.write(Ynames[int(prediction)])
 # debug: st.write(prediction)
 
-st.write("### Prediction Probability")
-st.write(prediction_proba)
+if selected_model == "Random forest classifier":
+    st.write("### Prediction Probability")
+    prediction_proba = model.model.predict_proba(df_predict)
+    st.write(prediction_proba)
 
-# Explaining the model's predictions using SHAP values
-# https://github.com/slundberg/shap
+    # Explaining the model's predictions using SHAP values
+    # https://github.com/slundberg/shap
 
-explainer = shap.TreeExplainer(model.model)
-shap_values = explainer.shap_values(X)
-shap.summary_plot(shap_values, X)
-fig = (
-    plt.gcf()
-)  # We need a figure in st.pyplot because otherwise streamlit complains with warnings
-ax = fig.gca()
-fig.suptitle("Feature importance based on SHAP values", y=1.1)
+    explainer = shap.TreeExplainer(model.model)
+    shap_values = explainer.shap_values(X)
+    shap.summary_plot(shap_values, X)
+    fig = (
+        plt.gcf()
+    )  # We need a figure in st.pyplot because otherwise streamlit complains with warnings
+    ax = fig.gca()
+    fig.suptitle("Feature importance based on SHAP values", y=1.1)
 
-st.pyplot(fig)  # bbox_inches='tight')
+    st.pyplot(fig)  # bbox_inches='tight')
 
 # debug: explainer = shap.Explainer(clf, X)
 # debug: shap_values = explainer(X, check_additivity=False)

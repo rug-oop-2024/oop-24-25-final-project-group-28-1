@@ -37,18 +37,18 @@ else:
 
 # Match selected model to create the appropriate model instance
 match selected_model:
-    case "Logistic Regression":
+    case "Logistic Regresssion":
         model = logistic_regression.LogisticRegressionModel()
     case "Random forest classifier":
-        model = random_forest_classifier.RandomForestClassifierModel(name="model forest", asset_path="assets/models", model_type="classification")
+        model = random_forest_classifier.RandomForestClassifierModel(name="model forest", asset_path="assets/models", model_type='classification')
     case "SVM classifier":
         model = SVM_classifier.SVMClassifierModel()
-    case "Multiple linear regression":
-        model = multiple_linear_regression.MultipleLinearRegression()
-    case "Random forest regressor":
+    case "Multiple_linear_regression":
+        model = multiple_linear_regression.MultipleLinearRegression()        
+    case "Random_forest_regressor":
         model = random_forest_regressor.RandomForestRegressorModel()
     case "Ridge regression":
-        model = ridge_regression.RidgeRegressionModel()
+        model = ridge_regression.RidgeRegressionModel(asset_path="")
     case _:
         st.error("Invalid model selected.")
         st.stop()
@@ -71,11 +71,10 @@ for name, feat_info in dataset.features.items():
     if feat_type == "numerical":
         features_list.append(feat)
     else:
-        target_feature = feat
-
-# Initialize the pipeline
-metrics = [metric.METRICS[0], metric.METRICS[1]]  # Assuming two metrics are needed
-pipeline = pipeline.Pipeline(metrics, dataset, model, features_list, target_feature)
+        target_feature = feature.Feature(name=name, type=feat_type)
+        target_feature.calculate_statistics(df[name])
+     
+pipeline = pipeline.Pipeline(metric, dataset, model, features_list, target_feature)
 
 # Display pipeline summary
 if pipeline:
