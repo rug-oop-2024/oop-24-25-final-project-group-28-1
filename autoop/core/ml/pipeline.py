@@ -30,6 +30,8 @@ class Pipeline:
         self._metrics = metrics
         self._artifacts = {}
         self._split = split
+        self._predictions = None
+        self._metric_results = []
 
         if (
             target_feature.type == "categorical"
@@ -120,13 +122,21 @@ class Pipeline:
         Y = self._train_y
         self._model.fit(X, Y)
 
-    def _evaluate(self, X, Y):
-        metrics_results = []
+    def _evaluate(self, X=None, Y=None):
+
+        # Use default test data if X and Y are not provided
+        if X is None:
+            X = self._compact_vectors(self._test_X)
+        if Y is None:
+            Y = self._test_y
+
+        self._metrics_results = []
         predictions = self._model.predict(X)
         for metric in self._metrics:
-            result = metric.evaluate(predictions, Y)
-            metrics_results.append((metric, result))
-        return metrics_results
+            result = metric(predictions, Y)
+            self._metric_results.append((metric, result))
+        self._predictions = predictions
+        return self._metric_results
 
     def execute(self):
         self._preprocess_features()
