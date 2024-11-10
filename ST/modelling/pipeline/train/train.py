@@ -50,7 +50,6 @@ if "selected_model" not in st.session_state:
 selected_model = st.session_state.selected_model
 
 if not selected_model:
-if not selected_model:
     st.warning("No model selected")
     st.stop()
 else:
