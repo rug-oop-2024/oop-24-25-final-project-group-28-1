@@ -18,6 +18,7 @@ class RandomForestRegressorModel(Model):
             parameters=parameters
         )
         self.model = RandomForestRegressor(**(parameters or {}))
+        self._model_type = model_type
 
     def fit(self, X: np.ndarray, y: np.ndarray) -> None:
         self.model.fit(X, y)
