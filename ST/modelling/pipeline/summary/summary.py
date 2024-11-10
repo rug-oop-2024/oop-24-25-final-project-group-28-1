@@ -37,7 +37,7 @@ else:
 
 # Match selected model to create the appropriate model instance
 match selected_model:
-    case "Logistic Regresssion":
+    case "Logistic Regression":
         model = logistic_regression.LogisticRegressionModel()
     case "Random forest classifier":
         model = random_forest_classifier.RandomForestClassifierModel(name="model forest", asset_path="assets/models", model_type='classification')

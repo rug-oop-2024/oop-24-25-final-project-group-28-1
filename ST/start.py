@@ -6,7 +6,7 @@ page_datasets_create = st.Page("datasets/management/create/create_dataset.py", t
 page_datasets_save = st.Page("datasets/management/save/save_dataset.py", title="Save dataset")
 page_datasets_delete = st.Page("datasets/management/delete/delete_dataset.py", title="Delete dataset")
 page_modelling_info = st.Page("page/modelling/modelling_info.py", title="Modelling")
-page_modelling_load = st.Page("modelling/datasets/list/load_dataset.py", title="Load exiting data sets")
+page_modelling_load = st.Page("modelling/datasets/list/load_dataset.py", title="Load existing data sets")
 page_modelling_feat = st.Page("modelling/datasets/features/dataset_features.py", title="Detect features")
 page_modelling_models = st.Page("modelling/models/models.py", title="Select model" )
 page_modelling_pipeline_split = st.Page("modelling/pipeline/split/split.py", title="Select a dataset split")
