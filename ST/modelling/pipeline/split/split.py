@@ -6,8 +6,10 @@ import streamlit as st
 
 if 'split_val' not in st.session_state:
     st.session_state.split_val = None
-    
-value = st.text_input("Enter a value for the test/train split fraction:", value=0.8)
+
+value = st.text_input(
+    "Enter a value for the test/train split fraction:", value=0.8
+)
 
 
 st.session_state.split_val = value
