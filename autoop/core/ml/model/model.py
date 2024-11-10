@@ -4,6 +4,7 @@ from autoop.core.ml.metric import get_metric
 import numpy as np
 from copy import deepcopy
 from typing import Dict, Any, Optional
+import pickle
 
 
 class Model(ABC):
@@ -22,6 +23,7 @@ class Model(ABC):
             data=b"",
             features=""
         )
+        self._name = name
         self._model_type = model_type
         self._parameters = parameters or {}
         self.trained = False
@@ -83,6 +85,21 @@ class Model(ABC):
         )
         self.trained = self._artifact.metadata.get("trained", False)
 
+    def to_artifact(self, name: str) -> Artifact:
+        """
+        Creates an Artifact representation of the model, including
+        its parameters and state.
+        """
+        model_data = pickle.dumps(self)  # Serializes the entire model instance
+        return Artifact(
+            name=name,
+            tags="Model Artifact",
+            type=self._model_type,
+            asset_path="",
+            data=model_data,
+            features=None
+        )
+
     @property
     def parameters(self) -> Dict[str, Any]:
         """
@@ -99,3 +116,7 @@ class Model(ABC):
             self._parameters.update(params)
         else:
             raise ValueError("Parameters must be provided as a dictionary.")
+
+    @property
+    def name(self) -> str:
+        return self._name
