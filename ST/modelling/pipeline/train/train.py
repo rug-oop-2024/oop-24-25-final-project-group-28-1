@@ -8,27 +8,27 @@ from autoop.core.ml.model.regression import ridge_regression
 import ST.helpermods.helper as helper
 import streamlit as st
 import pandas as pd
-from sklearn import datasets
-from sklearn.ensemble import RandomForestClassifier
+# from sklearn import datasets
+# from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 import shap
 import matplotlib.pyplot as plt
-from pathlib import Path
+# from pathlib import Path
 
 # VOG: Shap and streamlit are not displaying well in Matplotlib context
-#import matplotlib
-#matplotlib.use("Agg")
+# import matplotlib
+# matplotlib.use("Agg")
 
-#st.write("**Developers info**")
-#st.write("This is: modelling/pipeline/train/train.py")
-#st.write("\n\n Train the class and report the results of the pipeline.")
-#st.write("---")
+# st.write("**Developers info**")
+# st.write("This is: modelling/pipeline/train/train.py")
+# st.write("\n\n Train the class and report the results of the pipeline.")
+# st.write("---")
 
 st.write("""## Train and predict""")
 
 dataset, automl = helper.get_selected_dataset()
 if not dataset:
-     st.stop()
+    st.stop()
 
 s = f"Selected dataset: {dataset.name}"
 st.info(s)
@@ -44,32 +44,44 @@ if not dataset.features.keys():
 if 'selected_model' not in st.session_state:
     st.warning("No model selected")
     st.stop()
-   
+
 selected_model = st.session_state.selected_model
 
-if not selected_model:    
+if not selected_model:
     st.warning("No model selected")
     st.stop()
 else:
     st.write(f"Selected model is **{selected_model}**")
-    
-match selected_model:
-    case "Logistic Regresssion":
-        model = logistic_regression.LogisticRegressionModel()
-    case "Random forest classifier":
-        model = random_forest_classifier.RandomForestClassifierModel('classification')
-    case "SVM classifier":
-        model = SVM_classifier.SVMClassifierModel()
-    case "Multiple_linear_regression":
-        model = multiple_linear_regression.MultipleLinearRegression()        
-    case "Random_forest_regressor":
-        model = random_forest_regressor.RandomForestRegressorModel()
-    case "Ridge regression":
-        model = ridge_regression.RidgeRegressionModel()
-    case _:
-        st.write("Noting selected")
 
-    
+match selected_model:
+    case "Logistic Regression":
+        model = logistic_regression.LogisticRegressionModel(
+            asset_path=""
+        )
+    case "Random forest classifier":
+        model = random_forest_classifier.RandomForestClassifierModel(
+            asset_path=""
+        )
+    case "SVM classifier":
+        model = SVM_classifier.SVMClassifierModel(
+            asset_path=""
+        )
+    case "Multiple linear regression":
+        model = multiple_linear_regression.MultipleLinearRegression(
+            asset_path=""
+        )
+    case "Random forest regressor":
+        model = random_forest_regressor.RandomForestRegressorModel(
+            asset_path=""
+        )
+    case "Ridge regression":
+        model = ridge_regression.RidgeRegressionModel(
+            asset_path=""
+        )
+    case _:
+        st.write("Nothing selected")
+
+
 def user_input_features():
     data = {}
     selected_features = []
@@ -87,6 +99,7 @@ def user_input_features():
     features = pd.DataFrame(data, index=[0])
     return features, selected_features, categorical_column
 
+
 df_predict, selected_features, categorical_column = user_input_features()
 
 st.write('### User Input parameters')
@@ -97,16 +110,18 @@ df.columns = dataset.features.keys()
 
 X = df[selected_features]
 le = LabelEncoder()
-Ynames = list(set(df[categorical_column]))  # Set makes names unique. List makes it subscriptable
+# Set makes names unique. List makes it subscriptable
+Ynames = list(set(df[categorical_column]))
 st.write("### The labels in the categorical column are:")
 st.write(Ynames)
-Y = le.fit_transform(df[categorical_column])  # Transform the Y values to integer numbers
+# Transform the Y values to integer numbers
+Y = le.fit_transform(df[categorical_column])
 
 # Some checks for debugging
-#st.write("X:", X.shape)
-#st.write("Y:", Y)
+# st.write("X:", X.shape)
+# st.write("Y:", Y)
 
-#clf = RandomForestClassifier()
+# clf = RandomForestClassifier()
 model.fit(X, Y)
 
 prediction = model.predict(df_predict)
@@ -117,7 +132,7 @@ st.write(selected_features)
 
 st.write('### Prediction')
 st.write(Ynames[int(prediction)])
-#st.write(prediction)
+# st.write(prediction)
 
 st.write('### Prediction Probability')
 st.write(prediction_proba)
@@ -128,21 +143,23 @@ st.write(prediction_proba)
 explainer = shap.TreeExplainer(model.model)
 shap_values = explainer.shap_values(X)
 shap.summary_plot(shap_values, X)
-fig = plt.gcf()    # We need a figure in st.pyplot because otherwise streamlit complains with warnings
+# We need a figure in st.pyplot because otherwise streamlit complains
+# with warnings
+fig = plt.gcf()
 ax = fig.gca()
 fig.suptitle('Feature importance based on SHAP values', y=1.1)
 
-st.pyplot(fig)  #, bbox_inches='tight')
+st.pyplot(fig)  # bbox_inches='tight')
 
-#explainer = shap.Explainer(clf, X) 
-#shap_values = explainer(X, check_additivity=False)
-#shap.plots.bar(shap_values)
-#fig = plt.gcf()    # We need a figure in st.pyplot because otherwise streamlit complains with warnings
-#st.pyplot(fig, bbox_inches='tight')
+# explainer = shap.Explainer(clf, X)
+# shap_values = explainer(X, check_additivity=False)
+# shap.plots.bar(shap_values)
+# fig = plt.gcf()    # We need a figure in st.pyplot because otherwise
+# streamlit complains with warnings
+# st.pyplot(fig, bbox_inches='tight')
 
 # Bar plot not working somehow. We keep the necessary code in these comments
-#plt.title('Feature importance based on SHAP values (Bar)')
-#shap.summary_plot(shap_values, X, plot_type="bar")
-#fig = plt.gcf()
-#st.pyplot(fig, bbox_inches='tight')
-
+# plt.title('Feature importance based on SHAP values (Bar)')
+# shap.summary_plot(shap_values, X, plot_type="bar")
+# fig = plt.gcf()
+# st.pyplot(fig, bbox_inches='tight')
