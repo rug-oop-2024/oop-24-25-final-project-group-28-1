@@ -82,7 +82,7 @@ if pipeline:
 
     # Model configuration
     st.subheader("Model Configuration")
-    st.write(f"**Model Type**: {model.model_type}")
+    st.write(f"**Model Type**: {model._model_type}")
     st.write(f"**Model Name**: {model.__class__.__name__}")
     if hasattr(model, "parameters") and model.parameters:
         st.write("**Parameters:**")
@@ -105,7 +105,8 @@ if pipeline:
 
     # Metrics configuration
     st.subheader("Metrics")
-    if pipeline._metrics:
+    if isinstance(pipeline._metrics, list):
+        st.subheader("Metrics")
         for met in pipeline._metrics:
             st.write(f" - {met.__class__.__name__}")
     else:
