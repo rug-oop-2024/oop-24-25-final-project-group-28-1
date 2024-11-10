@@ -18,6 +18,6 @@ elif task_type == "Regression":
     selected_metrics = st.multiselect("Select metrics for regression:", regression_metrics, key="selected_metrics")
 
 # Display selected metrics
-st.write("You selected the following metrics:")
+st.success("You selected the following metrics:")
 for metric in st.session_state.selected_metrics:
-    st.write(f"- {metric}")
+    st.success(f"- {metric}")

@@ -35,6 +35,7 @@ num_cols = len(df.columns)
 
 try:
     fe = dataset.features.keys()
+    feats = list(fe)
 except:
     feats = None
 
