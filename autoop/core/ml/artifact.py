@@ -1,9 +1,6 @@
-import base64
-from typing import Any, Dict, List
-
 from pydantic import BaseModel, Field
-
-from autoop.core.ml.feature import Feature
+import base64
+from typing import Dict, Any
 
 
 class Artifact(BaseModel):
@@ -22,7 +19,6 @@ class Artifact(BaseModel):
     def id(self) -> str:
         """Generate a unique ID based on asset_path and version."""
         encoded_path = base64.b64encode(self.asset_path.encode()).decode()
-        # return f"{encoded_path}:{self.version}"
         return f"{encoded_path}_{self.version}"
 
     def save(self, data: bytes) -> bytes:
@@ -43,9 +39,3 @@ class Artifact(BaseModel):
             bytes: The data of the artifact.
         """
         return self.data
-
-    def get_features(self):
-        return self.features
-
-    def add_features(self, features: Dict[str, Any]) -> None:
-        self.features = features
