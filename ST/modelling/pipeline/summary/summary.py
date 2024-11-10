@@ -1,12 +1,19 @@
 from autoop.core.ml import metric
 import ST.helpermods.helper as helper
-from autoop.core.ml.model.classification import (logistic_regression, random_forest_classifier, SVM_classifier)
-from autoop.core.ml.model.regression import (multiple_linear_regression, random_forest_regressor, ridge_regression)
+from autoop.core.ml.model.classification import (
+    logistic_regression,
+    random_forest_classifier,
+    SVM_classifier)
+from autoop.core.ml.model.regression import (
+    multiple_linear_regression,
+    random_forest_regressor,
+    ridge_regression)
 from autoop.core.ml import (feature, pipeline)
 import streamlit as st
 
 # DEBUG: st.write("This is: modelling/pipeline/summary/summary.py")
-# DEBUG: st.write("\n\n Prompt the user with a beautifuly formatted pipeline summary with all the configurations.")
+# DEBUG: st.write("\n\n Prompt the user with a beautifuly
+# formatted pipeline summary with all the configurations.")
 # DEBUG: automl = AutoMLSystem.get_instance()
 
 st.title("Pipeline Summary")
@@ -40,11 +47,15 @@ match selected_model:
     case "Logistic Regression":
         model = logistic_regression.LogisticRegressionModel()
     case "Random forest classifier":
-        model = random_forest_classifier.RandomForestClassifierModel(name="model forest", asset_path="assets/models", model_type='classification')
+        model = random_forest_classifier.RandomForestClassifierModel(
+            name="model forest",
+            asset_path="assets/models",
+            model_type='classification'
+        )
     case "SVM classifier":
         model = SVM_classifier.SVMClassifierModel()
     case "Multiple_linear_regression":
-        model = multiple_linear_regression.MultipleLinearRegression()        
+        model = multiple_linear_regression.MultipleLinearRegression()
     case "Random_forest_regressor":
         model = random_forest_regressor.RandomForestRegressorModel()
     case "Ridge regression":
@@ -73,8 +84,14 @@ for name, feat_info in dataset.features.items():
     else:
         target_feature = feature.Feature(name=name, type=feat_type)
         target_feature.calculate_statistics(df[name])
-     
-pipeline = pipeline.Pipeline(metric, dataset, model, features_list, target_feature)
+
+pipeline = pipeline.Pipeline(
+    metric,
+    dataset,
+    model,
+    features_list,
+    target_feature
+)
 
 # Display pipeline summary
 if pipeline:
@@ -101,7 +118,8 @@ if pipeline:
     for feat in pipeline._input_features:
         st.write(f" - {feat.name} ({feat.type})")
     if target_feature:
-        st.write(f"**Target Feature**: {target_feature.name} ({target_feature.type})")
+        st.write(f"""**Target Feature**:
+                 {target_feature.name} ({target_feature.type})""")
 
     # Metrics configuration
     st.subheader("Metrics")
@@ -126,4 +144,5 @@ if pipeline:
     else:
         st.write("No artifacts generated.")
 else:
-    st.error("No pipeline configuration found. Please create and configure a pipeline first.")
+    st.error("""No pipeline configuration found. Please create and
+             configure a pipeline first.""")
