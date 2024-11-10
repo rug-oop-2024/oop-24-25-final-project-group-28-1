@@ -1,14 +1,19 @@
 import streamlit as st
 
-
 # Developers info
-#st.write("This is: modelling/models/models.py")
-#st.write("\n\nPrompt the user to select a model based on the task type.")
+# This is: modelling/models/models.py
+# Prompt the user to select a model based on the task type.
 
 st.write("Model selection")
 
-selects = ["Logistic Regresssion", "Random forest classifier", "SVM classifier",
-           "Multiple linear regression", "Random forest regressor", "Ridge regression"]
+selects = [
+    "Logistic Regresssion",
+    "Random forest classifier",
+    "SVM classifier",
+    "Multiple linear regression",
+    "Random forest regressor",
+    "Ridge regression",
+]
 
 prompt = "Model:"
 helpmes = "Select a model, appropriate for your data"
@@ -21,9 +26,9 @@ selected_model = st.selectbox(
 )
 
 if selected_model:
-    s = f"Selected model: {selected_model}"
-    st.success(s)
-if 'selected_model' not in st.session_state or not selected_model:
+    text = f"Selected model: {selected_model}"
+    st.success(text)
+if "selected_model" not in st.session_state or not selected_model:
     st.session_state.selected_model = None
 else:
-    st.session_state.selected_model= selected_model
+    st.session_state.selected_model = selected_model
