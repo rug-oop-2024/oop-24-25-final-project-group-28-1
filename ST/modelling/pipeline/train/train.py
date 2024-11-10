@@ -72,7 +72,7 @@ match selected_model:
     case "Multiple linear regression":
         model = multiple_linear_regression.MultipleLinearRegression(
             asset_path=""
-        )        
+        )
     case "Random forest regressor":
         model = random_forest_regressor.RandomForestRegressorModel(
             asset_path=""
@@ -83,7 +83,6 @@ match selected_model:
         )
     case _:
         st.write("Nothing selected")
-
 
 
 def user_input_features():
@@ -105,8 +104,8 @@ def user_input_features():
     return features, selected_features, categorical_column
 
 
-
 df_predict, selected_features, categorical_column = user_input_features()
+
 
 st.write("### User Input parameters")
 st.write(df_predict)
@@ -152,7 +151,7 @@ if selected_model == "Random forest classifier":
     shap.summary_plot(shap_values, X)
     fig = (
         plt.gcf()
-    )  # We need a figure in st.pyplot because otherwise streamlit complains with warnings
+    )
     ax = fig.gca()
     fig.suptitle("Feature importance based on SHAP values", y=1.1)
 
@@ -161,7 +160,7 @@ if selected_model == "Random forest classifier":
 # debug: explainer = shap.Explainer(clf, X)
 # debug: shap_values = explainer(X, check_additivity=False)
 # debug: shap.plots.bar(shap_values)
-# debug: fig = plt.gcf()    # We need a figure in st.pyplot because otherwise streamlit complains with warnings
+# debug: fig = plt.gcf()
 # debug: st.pyplot(fig, bbox_inches='tight')
 
 # Bar plot not working somehow. We keep the necessary code in these comments
