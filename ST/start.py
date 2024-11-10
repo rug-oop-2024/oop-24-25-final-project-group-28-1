@@ -24,7 +24,7 @@ pages = {
     "MODELLING": [page_modelling_load, page_modelling_feat, page_modelling_models,
                   page_modelling_pipeline_split, page_modelling_pipeline_metrics, page_modelling_pipeline_summary,
                   page_modelling_pipeline_train, page_modelling_pipeline_save ],
-    "DEPLOYMENT":[page_deployment_overview, page_deployment_load, page_deployment_predict],
+    "DEPLOYMENT":[page_deployment_load, page_deployment_predict],
 }
 
 pg = st.navigation(pages)
