@@ -13,19 +13,17 @@ class Model(Artifact, ABC):
         model_type (str): Type of model, "classification" or "regression".
         parameters (dict): Hyperparameters or model parameters for training.
     """
-
-    model_type: Literal["classification", "regression"]
-    parameters: Dict[str, Any]
-    trained: bool = False
-
     def __init__(
         self,
+        name: str,
         model_type: Literal["classification", "regression"],
         parameters: Dict[str, Any] = None
     ):
         super().__init__(asset_path="", data=b"", metadata={})
         self.model_type = model_type
         self.parameters = parameters if parameters is not None else {}
+        self.artifact = Artifact(name=name, asset_path="", data=b"")
+        self.trained = False
 
     @abstractmethod
     def fit(self, X: np.ndarray, y: np.ndarray) -> None:
