@@ -8,7 +8,7 @@ class RandomForestRegressorModel(Model):
         super().__init__(model_type="regression", parameters=parameters)
         self.model = RandomForestRegressor(**(parameters or {}))
 
-    def train(self, X: np.ndarray, y: np.ndarray) -> None:
+    def fit(self, X: np.ndarray, y: np.ndarray) -> None:
         self.model.fit(X, y)
         self.trained = True
 

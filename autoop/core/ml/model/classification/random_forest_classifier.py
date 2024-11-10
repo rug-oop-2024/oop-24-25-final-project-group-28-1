@@ -8,7 +8,7 @@ class RandomForestClassifierModel(Model):
         super().__init__(model_type="classification", parameters=parameters)
         self.model = RandomForestClassifier(**(parameters or {}))
 
-    def train(self, X: np.ndarray, y: np.ndarray) -> None:
+    def fit(self, X: np.ndarray, y: np.ndarray) -> None:
         self.model.fit(X, y)
         self.trained = True
 
