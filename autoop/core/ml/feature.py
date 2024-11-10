@@ -3,7 +3,6 @@ from typing import Literal
 import numpy as np
 
 
-
 class Feature(BaseModel):
     name: str = Field(..., description="Name of the feature")
     type: Literal["categorical", "numerical"] = Field(
