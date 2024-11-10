@@ -1,22 +1,27 @@
 import base64
-from typing import Any, Dict, List
-
-from pydantic import BaseModel, Field, ConfigDict
-from autoop.core.ml.feature import Feature
+from typing import Any, Dict
 
 
-class Artifact(BaseModel):
-    model_config = ConfigDict(protected_namespaces=())
-    name: str = Field(description="Name of asset")
-    tags: str = Field(default="No tags", description="Tags")
-    type: str = Field(description="The type of the artifact")
-    asset_path: str = Field(description="Path where the artifact is stored")
-    version: str = Field(default="1.0.0", description="Version of the artifact")
-    data: bytes = Field(description="Binary data of the artifact")
-    metadata: Dict[str, Any] = Field(
-        default_factory=dict, description="Metadata for the artifact"
-    )
-    features: Dict[str, Any] = Field(default={}, description="List with features")
+class Artifact:
+    def __init__(
+        self,
+        name: str,
+        tags: str,
+        type: str,
+        asset_path: str,
+        data: bytes,
+        version: str = "1.0.0",
+        metadata: Dict[str, Any] = None,
+        features: Dict[str, Any] = None
+    ):
+        self.name = name
+        self.tags = tags
+        self.type = type
+        self.asset_path = asset_path
+        self.data = data
+        self.version = version
+        self.metadata = metadata or {}
+        self.features = features
 
     @property
     def id(self) -> str:
