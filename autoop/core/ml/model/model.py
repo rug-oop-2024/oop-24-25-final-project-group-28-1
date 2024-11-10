@@ -3,26 +3,27 @@ from autoop.core.ml.artifact import Artifact
 from autoop.core.ml.metric import get_metric
 import numpy as np
 from copy import deepcopy
-from typing import Literal, Dict, Any
+from typing import Dict, Any, Optional
 
 
-class Model(Artifact, ABC):
-    """
-    Base class for all machine learning models.
-    Attributes:
-        model_type (str): Type of model, "classification" or "regression".
-        parameters (dict): Hyperparameters or model parameters for training.
-    """
+class Model(ABC):
     def __init__(
         self,
         name: str,
-        model_type: Literal["classification", "regression"],
-        parameters: Dict[str, Any] = None
+        model_type: str,
+        parameters: Optional[Dict[str, Any]] = None
     ):
-        super().__init__(asset_path="", data=b"", metadata={})
-        self.model_type = model_type
-        self.parameters = parameters if parameters is not None else {}
-        self.artifact = Artifact(name=name, asset_path="", data=b"")
+        # Use Artifact as attribute
+        self._artifact = Artifact(
+            name=name,
+            tags="No Tags",
+            type=model_type,
+            asset_path="",
+            data=b"",
+            features=""
+        )
+        self._model_type = model_type
+        self._parameters = parameters or {}
         self.trained = False
 
     @abstractmethod
@@ -41,7 +42,6 @@ class Model(Artifact, ABC):
         Abstract method to make predictions based on input features.
         Args:
             X (np.ndarray): Features for prediction.
-
         Returns:
             np.ndarray: Predicted values or labels.
         """
@@ -69,8 +69,8 @@ class Model(Artifact, ABC):
         """
         Saves model parameters or state to a file.
         """
-        self.metadata["parameters"] = deepcopy(self.parameters)
-        self.metadata["trained"] = self.trained
+        self._artifact.metadata["parameters"] = deepcopy(self._parameters)
+        self._artifact.metadata["trained"] = self.trained
         self.asset_path = path
 
     def load_model(self, path: str) -> None:
@@ -78,15 +78,17 @@ class Model(Artifact, ABC):
         Loads model parameters or state from a file.
         """
         self.asset_path = path
-        self.parameters = deepcopy(self.metadata.get("parameters", {}))
-        self.trained = self.metadata.get("trained", False)
+        self._parameters = deepcopy(
+            self._artifact.metadata.get("parameters", {})
+        )
+        self.trained = self._artifact.metadata.get("trained", False)
 
     @property
     def parameters(self) -> Dict[str, Any]:
         """
         Gets the current model parameters.
         """
-        return deepcopy(self.parameters)
+        return deepcopy(self._parameters)
 
     @parameters.setter
     def parameters(self, params: Dict[str, Any]) -> None:
@@ -94,6 +96,6 @@ class Model(Artifact, ABC):
         Sets or updates model parameters.
         """
         if isinstance(params, dict):
-            self.parameters.update(params)
+            self._parameters.update(params)
         else:
             raise ValueError("Parameters must be provided as a dictionary.")
