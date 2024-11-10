@@ -15,7 +15,7 @@ class Model(Artifact, ABC):
     """
 
     model_type: Literal["classification", "regression"]
-    _parameters: Dict[str, Any]
+    parameters: Dict[str, Any]
     trained: bool = False
 
     def __init__(
@@ -25,7 +25,7 @@ class Model(Artifact, ABC):
     ):
         super().__init__(asset_path="", data=b"", metadata={})
         self.model_type = model_type
-        self._parameters = parameters if parameters is not None else {}
+        self.parameters = parameters if parameters is not None else {}
 
     @abstractmethod
     def fit(self, X: np.ndarray, y: np.ndarray) -> None:
@@ -71,7 +71,7 @@ class Model(Artifact, ABC):
         """
         Saves model parameters or state to a file.
         """
-        self.metadata["parameters"] = deepcopy(self._parameters)
+        self.metadata["parameters"] = deepcopy(self.parameters)
         self.metadata["trained"] = self.trained
         self.asset_path = path
 
@@ -80,7 +80,7 @@ class Model(Artifact, ABC):
         Loads model parameters or state from a file.
         """
         self.asset_path = path
-        self._parameters = deepcopy(self.metadata.get("parameters", {}))
+        self.parameters = deepcopy(self.metadata.get("parameters", {}))
         self.trained = self.metadata.get("trained", False)
 
     @property
@@ -88,7 +88,7 @@ class Model(Artifact, ABC):
         """
         Gets the current model parameters.
         """
-        return deepcopy(self._parameters)
+        return deepcopy(self.parameters)
 
     @parameters.setter
     def parameters(self, params: Dict[str, Any]) -> None:
@@ -96,6 +96,6 @@ class Model(Artifact, ABC):
         Sets or updates model parameters.
         """
         if isinstance(params, dict):
-            self._parameters.update(params)
+            self.parameters.update(params)
         else:
             raise ValueError("Parameters must be provided as a dictionary.")
