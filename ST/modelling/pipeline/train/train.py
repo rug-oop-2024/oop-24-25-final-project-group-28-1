@@ -29,6 +29,7 @@ st.write("""## Train and predict""")
 dataset, automl = helper.get_selected_dataset()
 if not dataset:
     st.stop()
+    st.stop()
 
 text = f"Selected dataset: {dataset.name}"
 st.info(text)
@@ -45,31 +46,45 @@ if "selected_model" not in st.session_state:
     st.warning("No model selected")
     st.stop()
 
+
 selected_model = st.session_state.selected_model
 
+if not selected_model:
 if not selected_model:
     st.warning("No model selected")
     st.stop()
 else:
     st.write(f"Selected model is **{selected_model}**")
 
+
 match selected_model:
-    case "Logistic Regresssion":
-        model = logistic_regression.LogisticRegressionModel()
+    case "Logistic Regression":
+        model = logistic_regression.LogisticRegressionModel(
+            asset_path=""
+        )
     case "Random forest classifier":
         model = random_forest_classifier.RandomForestClassifierModel(
-            "classifier", "assets/model"
+            asset_path=""
         )
     case "SVM classifier":
-        model = SVM_classifier.SVMClassifierModel()
-    case "Multiple_linear_regression":
-        model = multiple_linear_regression.MultipleLinearRegression()
-    case "Random_forest_regressor":
-        model = random_forest_regressor.RandomForestRegressorModel()
+        model = SVM_classifier.SVMClassifierModel(
+            asset_path=""
+        )
+    case "Multiple linear regression":
+        model = multiple_linear_regression.MultipleLinearRegression(
+            asset_path=""
+        )
+    case "Random forest regressor":
+        model = random_forest_regressor.RandomForestRegressorModel(
+            asset_path=""
+        )
     case "Ridge regression":
-        model = ridge_regression.RidgeRegressionModel()
+        model = ridge_regression.RidgeRegressionModel(
+            asset_path=""
+        )
     case _:
-        st.write("Noting selected")
+        st.write("Nothing selected")
+
 
 
 def user_input_features():
@@ -91,6 +106,7 @@ def user_input_features():
     return features, selected_features, categorical_column
 
 
+
 df_predict, selected_features, categorical_column = user_input_features()
 
 st.write("### User Input parameters")
@@ -101,19 +117,18 @@ df.columns = dataset.features.keys()
 
 X = df[selected_features]
 le = LabelEncoder()
-Ynames = list(
-    set(df[categorical_column])
-)  # Set makes names unique. List makes it subscriptable
+# Set makes names unique. List makes it subscriptable
+Ynames = list(set(df[categorical_column]))
 st.write("### The labels in the categorical column are:")
 st.write(Ynames)
-Y = le.fit_transform(
-    df[categorical_column]
-)  # Transform the Y values to integer numbers
+# Transform the Y values to integer numbers
+Y = le.fit_transform(df[categorical_column])
 
 # Some checks for debugging
 # debug: st.write("X:", X.shape)
 # debug: st.write("Y:", Y)
 
+# clf = RandomForestClassifier()
 # clf = RandomForestClassifier()
 model.fit(X, Y)
 
@@ -142,7 +157,7 @@ fig = (
 ax = fig.gca()
 fig.suptitle("Feature importance based on SHAP values", y=1.1)
 
-st.pyplot(fig)  # , bbox_inches='tight')
+st.pyplot(fig)  # bbox_inches='tight')
 
 # debug: explainer = shap.Explainer(clf, X)
 # debug: shap_values = explainer(X, check_additivity=False)
