@@ -1,12 +1,12 @@
 import base64
 from typing import Any, Dict, List
 
-from pydantic import BaseModel, Field
-
+from pydantic import BaseModel, Field, ConfigDict
 from autoop.core.ml.feature import Feature
 
 
 class Artifact(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
     name: str = Field(description="Name of asset")
     tags: str = Field(default="No tags", description="Tags")
     type: str = Field(description="The type of the artifact")
