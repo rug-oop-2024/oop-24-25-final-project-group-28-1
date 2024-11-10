@@ -3,115 +3,121 @@ import ST.helpermods.helper as helper
 from autoop.core.ml.model.classification import (logistic_regression, random_forest_classifier, SVM_classifier)
 from autoop.core.ml.model.regression import (multiple_linear_regression, random_forest_regressor, ridge_regression)
 from autoop.core.ml import (feature, pipeline)
-
 import streamlit as st
 
-#DEBUG: st.write("This is: modelling/pipeline/summary/summary.py")
-#DEBUG: st.write("\n\n Prompt the user with a beautifuly formatted pipeline summary with all the configurations.")
-
-
-
+# DEBUG: st.write("This is: modelling/pipeline/summary/summary.py")
+# DEBUG: st.write("\n\n Prompt the user with a beautifuly formatted pipeline summary with all the configurations.")
 # DEBUG: automl = AutoMLSystem.get_instance()
 
 st.title("Pipeline Summary")
 # pipeline = automl.get_pipeline()
 
-metric = [metric.METRICS[0], metric.METRICS[1]]
+# Get the selected dataset and automl instance
 dataset, automl = helper.get_selected_dataset()
 if not dataset:
-     st.stop()
-
-if 'selected_model' not in st.session_state:
-    st.warning("No model selected")
+    st.error("No dataset selected.")
     st.stop()
-   
-selected_model = st.session_state.selected_model
 
-if not selected_model:    
-    st.warning("No model selected")
+# Check if features are available in the dataset
+if dataset.features is None:
+    st.error("No features available in the dataset.")
+    st.stop()
+
+# Get the selected model from session state
+if 'selected_model' not in st.session_state:
+    st.warning("No model selected.")
+    st.stop()
+
+selected_model = st.session_state.selected_model
+if not selected_model:
+    st.warning("No model selected.")
     st.stop()
 else:
-    st.write(f"Selected model is **{selected_model}**")     
- 
+    st.write(f"Selected model is **{selected_model}**")
+
+# Match selected model to create the appropriate model instance
 match selected_model:
-    case "Logistic Regresssion":
+    case "Logistic Regression":
         model = logistic_regression.LogisticRegressionModel()
     case "Random forest classifier":
-        model = random_forest_classifier.RandomForestClassifierModel(name="model forest", asset_path="assets/models", model_type='classification')
+        model = random_forest_classifier.RandomForestClassifierModel(name="model forest", asset_path="assets/models", model_type="classification")
     case "SVM classifier":
         model = SVM_classifier.SVMClassifierModel()
-    case "Multiple_linear_regression":
-        model = multiple_linear_regression.MultipleLinearRegression()        
-    case "Random_forest_regressor":
+    case "Multiple linear regression":
+        model = multiple_linear_regression.MultipleLinearRegression()
+    case "Random forest regressor":
         model = random_forest_regressor.RandomForestRegressorModel()
     case "Ridge regression":
         model = ridge_regression.RidgeRegressionModel()
     case _:
-        st.write("Noting selected")
+        st.error("Invalid model selected.")
+        st.stop()
 
+# Load dataset into a DataFrame and ensure columns are named correctly
 df = helper.dataset_to_pd(dataset)
-num_cols = len(df.columns)
-dataset_features = dataset.get_features()
-df.columns = dataset.features.keys()
+if dataset.features:
+    df.columns = dataset.features.keys()
+else:
+    st.error("Dataset does not contain features.")
+    st.stop()
 
+# Prepare features and target feature for the pipeline
 features_list = []
 target_feature = None
-for name in dataset_features.keys():
-    feat_type = dataset_features[name]['type']
-    if feat_type == 'numerical':
-        feat = feature.Feature(name=name, type=feat_type)
-        feat.calculate_statistics(df[name])
+for name, feat_info in dataset.features.items():
+    feat_type = feat_info.get("type", "numerical")
+    feat = feature.Feature(name=name, type=feat_type)
+    feat.calculate_statistics(df[name])
+    if feat_type == "numerical":
         features_list.append(feat)
     else:
-        target_feature = feature.Feature(name=name, type=feat_type)
-        target_feature.calculate_statistics(df[name])
-     
-pipeline = pipeline.Pipeline(metric, dataset, model, features_list, target_feature)
+        target_feature = feat
 
+# Initialize the pipeline
+metrics = [metric.METRICS[0], metric.METRICS[1]]  # Assuming two metrics are needed
+pipeline = pipeline.Pipeline(metrics, dataset, model, features_list, target_feature)
 
+# Display pipeline summary
 if pipeline:
     st.write("### Pipeline Overview")
 
-    # model configuration
+    # Model configuration
     st.subheader("Model Configuration")
-    model = pipeline.model
-    st.write(f"**Model Type**: {model.type}")
+    st.write(f"**Model Type**: {model.model_type}")
     st.write(f"**Model Name**: {model.__class__.__name__}")
-    if hasattr(model, 'parameters') and model.parameters:
+    if hasattr(model, "parameters") and model.parameters:
         st.write("**Parameters:**")
         for param, value in model.parameters.items():
             st.write(f" - {param}: {value}")
 
-    # dataset configuration
+    # Dataset configuration
     st.subheader("Dataset Configuration")
-    dataset = pipeline._dataset
     st.write(f"**Dataset Name**: {dataset.name}")
     st.write(f"**Asset Path**: {dataset.asset_path}")
-    st.write(f"**Number of Samples**: {dataset.size}")
+    st.write(f"**Number of Samples**: {len(df)}")
 
-    # feature configuration
+    # Feature configuration
     st.subheader("Features")
     st.write("**Input Features:**")
-    for feature in pipeline._input_features:
-        st.write(f" - {feature.name} ({feature.type})")
+    for feat in pipeline._input_features:
+        st.write(f" - {feat.name} ({feat.type})")
+    if target_feature:
+        st.write(f"**Target Feature**: {target_feature.name} ({target_feature.type})")
 
-    st.write(f"""**Target Feature**: {pipeline._target_feature.name}
-             ({pipeline._target_feature.type})""")
-
-    # metrics configuration
+    # Metrics configuration
     st.subheader("Metrics")
     if pipeline._metrics:
-        for metric in pipeline._metrics:
-            st.write(f" - {metric.__class__.__name__}")
+        for met in pipeline._metrics:
+            st.write(f" - {met.__class__.__name__}")
     else:
         st.write("No metrics configured.")
 
-    # data-split configuration
+    # Data-split configuration
     st.subheader("Data Split")
     st.write(f"**Training Split**: {pipeline._split * 100}%")
     st.write(f"**Testing Split**: {(1 - pipeline._split) * 100}%")
 
-    # artifacts summary
+    # Artifacts summary
     st.subheader("Artifacts")
     artifacts = pipeline.artifacts
     if artifacts:
@@ -119,8 +125,5 @@ if pipeline:
             st.write(f" - {artifact.name}")
     else:
         st.write("No artifacts generated.")
-
 else:
-    st.error("""No pipeline configuration found. Please create and configure a
-             pipeline first.""")
-
+    st.error("No pipeline configuration found. Please create and configure a pipeline first.")
